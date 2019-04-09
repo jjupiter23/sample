@@ -40,7 +40,8 @@ function initMap() {
   
   var jollibee_marker = new google.maps.Marker({
           position: jollibee,
-          map: map
+          map: map,
+          label: 'Jollibee'
   });
 
   drawingManager = new google.maps.drawing.DrawingManager({
