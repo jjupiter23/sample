@@ -18,16 +18,13 @@ function setSelection(shape) {
 function deleteSelectedShape() {
   if (selectedShape) {
     selectedShape.setMap(null);
-    // To show:
-
-  drawingManager.setOptions({
+    drawingManager.setOptions({
     drawingControl: true
   });
   }
 }
 
 function initMap() {
-  // Create the map.
   var cebu = {lat: 10.3157, lng: 123.8854};
   map = new google.maps.Map(document.getElementById('map'), {
     center: cebu,
@@ -78,9 +75,7 @@ function initMap() {
 
   google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
     if (e.type != google.maps.drawing.OverlayType.POLYGON) {
-      // Switch back to non-drawing mode after drawing a shape.
       drawingManager.setDrawingMode(null);
-      // To hide:
       drawingManager.setOptions({
         drawingControl: false
       });
@@ -145,7 +140,7 @@ function createMarkers(places) {
 
     bounds.extend(place.geometry.location);
 }
-
+  
   map.fitBounds(bounds);
   google.maps.event.addDomListener(window, 'load', initMap);
   
