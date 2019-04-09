@@ -25,10 +25,22 @@ function deleteSelectedShape() {
 }
 
 function initMap() {
+  // Create the map.
   var cebu = {lat: 10.3157, lng: 123.8854};
   map = new google.maps.Map(document.getElementById('map'), {
     center: cebu,
     zoom: 17
+  });
+
+  var marker = new google.maps.Marker({
+          position: cebu,
+          map: map
+  });
+
+  var jollibee = {lat:10.315453, lng:123.885204};
+  var jollibee_marker = new google.maps.Marker({
+          position: jollibee,
+          map: map
   });
 
   drawingManager = new google.maps.drawing.DrawingManager({
@@ -65,11 +77,13 @@ function initMap() {
   google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
     if (event.type == google.maps.drawing.OverlayType.CIRCLE) {
       var radius = event.overlay.getRadius();
-      alert('CIRCLE');
+      var bounds = event.overlay.getBounds().contains(jollibee);
+      alert(bounds);
     }
+    // for rectangle
     else {
-      var bounds = event.overlay.getBounds();
-      alert('rec');
+      var bounds = event.overlay.getBounds().contains(jollibee);
+      alert(bounds);
     }
   });
 
@@ -140,9 +154,9 @@ function createMarkers(places) {
 
     bounds.extend(place.geometry.location);
 }
-  
+
   map.fitBounds(bounds);
   google.maps.event.addDomListener(window, 'load', initMap);
-  
+
 }
 
