@@ -25,7 +25,6 @@ function deleteSelectedShape() {
 }
 
 function initMap() {
-  // Create the map.
   var cebu = {lat: 10.3157, lng: 123.8854};
   map = new google.maps.Map(document.getElementById('map'), {
     center: cebu,
@@ -38,6 +37,7 @@ function initMap() {
   });
 
   var jollibee = {lat:10.315453, lng:123.885204};
+  
   var jollibee_marker = new google.maps.Marker({
           position: jollibee,
           map: map
@@ -141,7 +141,7 @@ function createMarkers(places) {
       scaledSize: new google.maps.Size(25, 25)
     };
 
-    var marker = new google.maps.Marker({
+    var cebu_marker = new google.maps.Marker({
       map: map,
       icon: image,
       title: place.name,
@@ -154,9 +154,8 @@ function createMarkers(places) {
 
     bounds.extend(place.geometry.location);
 }
-
+  
   map.fitBounds(bounds);
   google.maps.event.addDomListener(window, 'load', initMap);
-
+  
 }
-
