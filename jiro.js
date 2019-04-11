@@ -3,12 +3,14 @@ var selectedShape;
 var drawingManager;
 var markers = [];
 
+
+
 function initMap() {
   // Create the map.
   var cebu = {lat: 10.3157, lng: 123.8854};
   map = new google.maps.Map(document.getElementById('map'), {
     center: cebu,
-    zoom: 17
+    zoom: 20
   });
 
   var cebu_marker = new google.maps.Marker({
@@ -17,7 +19,7 @@ function initMap() {
   });
 
   drawingManager = new google.maps.drawing.DrawingManager({
-  drawingMode: google.maps.drawing.OverlayType.POLYGON,
+  drawingMode: 'circle',
   drawingControl: true,
   drawingControlOptions: {
     position: google.maps.ControlPosition.TOP_CENTER,
@@ -48,11 +50,25 @@ function initMap() {
   google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
     if (event.type == google.maps.drawing.OverlayType.CIRCLE) {
       var radius = event.overlay.getRadius();
+      var center = event.overlay.getCenter();
+      clearMap();
+
+      var IDs=[];
+      for(var k in markers){
+        if(google.maps.geometry.spherical.computeDistanceBetween(center,markers[k].getPosition())<=radius){
+          IDs.push(k);
+          markers[k].setMap(map);
+          console.log(markers[k].title, markers[k].position);
+        }
+     
+      }
+
+      alert("Found " + IDs.length + " restaurants");
     }
     // for rectangle
     else {
       var bounds = event.overlay.getBounds()
-      alert(bounds);
+      clearMap();
     }
   });
 
@@ -74,6 +90,7 @@ function initMap() {
   google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
   google.maps.event.addListener(map, 'click', clearSelection);
   google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
+  
 
   var service = new google.maps.places.PlacesService(map);
   var getNextPage = null;
@@ -96,17 +113,22 @@ function initMap() {
     moreButton.disabled = !pagination.hasNextPage;
     getNextPage = pagination.hasNextPage && function() {
     pagination.nextPage();
+
     };
   });
 
+
+  
   // for dropdown menu
   var nearbyRequest = {location: cebu, radius: 500, type: ['restaurant']};
   var dropdown = document.getElementById('cuisine');
+
+  
+
   dropdown.onchange = function() {
-
-    document.getElementById("places").innerHTML = "";
+    
     clearMap();
-
+    markers = [];
     cuisine = document.getElementById("cuisine").value 
     if (cuisine == 'all') {
       nearbyRequest = {location: cebu, radius: 500, type: ['restaurant']};
@@ -126,6 +148,10 @@ function initMap() {
         };
       });
   };
+
+  //
+
+
 }
 
 
@@ -150,16 +176,26 @@ function createMarkers(places) {
       title: place.name,
       position: place.geometry.location
     });
-    
+
+    //assign listeners to marker
+    marker.addListener('click', (
+      function(marker, i) {
+        return function() {
+          alert(marker.title);                    
+        }
+      })
+    (marker, i));
+
     markers.push(marker);
+    console.log(marker.title,markers.length);
 
     var li = document.createElement('li');
-    li.textContent = place.name 
+    li.textContent = place.name
     placesList.appendChild(li);
     bounds.extend(place.geometry.location);
     
   }
-
+  
   map.fitBounds(bounds);
   google.maps.event.addDomListener(window, 'load', initMap);
 }
@@ -182,12 +218,17 @@ function deleteSelectedShape() {
     selectedShape.setMap(null);
     drawingManager.setOptions({
     drawingControl: true
-  });
+    });
+
+    clearMap();
   }
+
 }
 
 function clearMap() {
+  document.getElementById("places").innerHTML = "";
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(null);
   }
+
 }
