@@ -142,7 +142,7 @@ function createMarkers(places) {
       scaledSize: new google.maps.Size(25, 25)
     };
 
-    var cebu_marker = new google.maps.Marker({
+    var marker = new google.maps.Marker({
       map: map,
       icon: image,
       title: place.name,
