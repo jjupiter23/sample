@@ -1,47 +1,19 @@
 var map;
 var selectedShape;
 var drawingManager;
-
-function clearSelection() {
-  if (selectedShape) {
-    selectedShape.setEditable(false);
-    selectedShape = null;
-  }
-}
-
-function setSelection(shape) {
-  clearSelection();
-  selectedShape = shape;
-  shape.setEditable(false);
-}
-
-function deleteSelectedShape() {
-  if (selectedShape) {
-    selectedShape.setMap(null);
-    drawingManager.setOptions({
-    drawingControl: true
-  });
-  }
-}
+var markers = [];
 
 function initMap() {
+  // Create the map.
   var cebu = {lat: 10.3157, lng: 123.8854};
   map = new google.maps.Map(document.getElementById('map'), {
     center: cebu,
     zoom: 17
   });
 
-  var marker = new google.maps.Marker({
+  var cebu_marker = new google.maps.Marker({
           position: cebu,
           map: map
-  });
-
-  var jollibee = {lat:10.315453, lng:123.885204};
-  
-  var jollibee_marker = new google.maps.Marker({
-          position: jollibee,
-          map: map,
-          label: 'Jollibee'
   });
 
   drawingManager = new google.maps.drawing.DrawingManager({
@@ -73,17 +45,13 @@ function initMap() {
   }
   });
 
-  drawingManager.setMap(map);
-
   google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
     if (event.type == google.maps.drawing.OverlayType.CIRCLE) {
       var radius = event.overlay.getRadius();
-      var bounds = event.overlay.getBounds().contains(jollibee);
-      alert(bounds);
     }
     // for rectangle
     else {
-      var bounds = event.overlay.getBounds().contains(jollibee);
+      var bounds = event.overlay.getBounds()
       alert(bounds);
     }
   });
@@ -94,7 +62,6 @@ function initMap() {
       drawingManager.setOptions({
         drawingControl: false
       });
-
       var newShape = e.overlay;
       newShape.type = e.type;
       google.maps.event.addListener(newShape, 'click', function() {
@@ -116,24 +83,59 @@ function initMap() {
     if (getNextPage) getNextPage();
   };
 
+  draw.onclick = function () {
+    drawingManager.setMap(map);
+  }
+
+  // default markers when map loads
   service.nearbySearch(
-      {location: cebu, radius: 500, type: ['restaurant']},
+  {location: cebu, radius: 500, type: ['restaurant']},
+  function(results, status, pagination) {
+    if (status !== 'OK') return;
+    createMarkers(results);
+    moreButton.disabled = !pagination.hasNextPage;
+    getNextPage = pagination.hasNextPage && function() {
+    pagination.nextPage();
+    };
+  });
+
+  // for dropdown menu
+  var nearbyRequest = {location: cebu, radius: 500, type: ['restaurant']};
+  var dropdown = document.getElementById('cuisine');
+  dropdown.onchange = function() {
+
+    document.getElementById("places").innerHTML = "";
+    clearMap();
+
+    cuisine = document.getElementById("cuisine").value 
+    if (cuisine == 'all') {
+      nearbyRequest = {location: cebu, radius: 500, type: ['restaurant']};
+    }
+    else {
+      nearbyRequest = {location: cebu, radius: 500, keyword: cuisine, type: ['restaurant']};
+    }
+
+    service.nearbySearch(
+      nearbyRequest,
       function(results, status, pagination) {
         if (status !== 'OK') return;
-
         createMarkers(results);
         moreButton.disabled = !pagination.hasNextPage;
         getNextPage = pagination.hasNextPage && function() {
-          pagination.nextPage();
+        pagination.nextPage();
         };
       });
+  };
 }
 
+
 function createMarkers(places) {
+  
   var bounds = new google.maps.LatLngBounds();
   var placesList = document.getElementById('places');
-
+  
   for (var i = 0, place; place = places[i]; i++) {
+
     var image = {
       url: place.icon,
       size: new google.maps.Size(71, 71),
@@ -148,15 +150,44 @@ function createMarkers(places) {
       title: place.name,
       position: place.geometry.location
     });
+    
+    markers.push(marker);
 
     var li = document.createElement('li');
-    li.textContent = place.name + ' ' + marker.getPosition();
+    li.textContent = place.name 
     placesList.appendChild(li);
-
     bounds.extend(place.geometry.location);
-}
-  
+    
+  }
+
   map.fitBounds(bounds);
   google.maps.event.addDomListener(window, 'load', initMap);
-  
+}
+
+function clearSelection() {
+  if (selectedShape) {
+    selectedShape.setEditable(false);
+    selectedShape = null;
+  }
+}
+
+function setSelection(shape) {
+  clearSelection();
+  selectedShape = shape;
+  shape.setEditable(false);
+}
+
+function deleteSelectedShape() {
+  if (selectedShape) {
+    selectedShape.setMap(null);
+    drawingManager.setOptions({
+    drawingControl: true
+  });
+  }
+}
+
+function clearMap() {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
 }
