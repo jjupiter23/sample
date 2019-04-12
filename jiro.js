@@ -1,6 +1,7 @@
 var map;
 var selectedShape;
 var drawingManager;
+var infowindow;
 var markers = [];
 
 
@@ -18,6 +19,11 @@ function initMap() {
           map: map
   });
 
+  draw.onclick = function () {
+    drawingManager.setMap(map);
+    draw.disabled = true;
+  }
+
   drawingManager = new google.maps.drawing.DrawingManager({
   drawingMode: 'circle',
   drawingControl: true,
@@ -29,7 +35,7 @@ function initMap() {
   circleOptions: {
     fillColor: '#ffff00',
     fillOpacity: 0.5,
-    strokeWeight: 1,
+    strokeWeight: 0,
     clickable: true,
     draggable: false,
     editable: false,
@@ -39,7 +45,7 @@ function initMap() {
   rectangleOptions: {
     fillColor: '#ffff00',
     fillOpacity: 0.5,
-    strokeWeight: 1,
+    strokeWeight: 0,
     clickable: true,
     draggable: false,
     editable: false,
@@ -47,11 +53,12 @@ function initMap() {
   }
   });
 
+
   google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
     if (event.type == google.maps.drawing.OverlayType.CIRCLE) {
       var radius = event.overlay.getRadius();
       var center = event.overlay.getCenter();
-      clearMap();
+     
 
       var IDs=[];
       for(var k in markers){
@@ -62,8 +69,15 @@ function initMap() {
         }
      
       }
+      var matches = "Found " + IDs.length.toString() + " restaurant(s)";
+      infowindow = new google.maps.InfoWindow({
+        content: matches,
+        position: center,
 
-      alert("Found " + IDs.length + " restaurants");
+      });
+
+      infowindow.open(map);
+      infowindow.addListener('closeclick', deleteSelectedShape);
     }
     // for rectangle
     else {
@@ -100,11 +114,9 @@ function initMap() {
     if (getNextPage) getNextPage();
   };
 
-  draw.onclick = function () {
-    drawingManager.setMap(map);
-  }
 
-  // default markers when map loads
+
+/*  // default markers when map loads
   service.nearbySearch(
   {location: cebu, radius: 500, type: ['restaurant']},
   function(results, status, pagination) {
@@ -115,7 +127,7 @@ function initMap() {
     pagination.nextPage();
 
     };
-  });
+  });*/
 
 
   
@@ -187,7 +199,6 @@ function createMarkers(places) {
     (marker, i));
 
     markers.push(marker);
-    console.log(marker.title,markers.length);
 
     var li = document.createElement('li');
     li.textContent = place.name
@@ -195,7 +206,6 @@ function createMarkers(places) {
     bounds.extend(place.geometry.location);
     
   }
-  
   map.fitBounds(bounds);
   google.maps.event.addDomListener(window, 'load', initMap);
 }
@@ -219,8 +229,7 @@ function deleteSelectedShape() {
     drawingManager.setOptions({
     drawingControl: true
     });
-
-    clearMap();
+    infowindow.close();
   }
 
 }
