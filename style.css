@@ -72,18 +72,18 @@ li:nth-child(odd) {
 }
 
 #right-panel {
-        font-family: 'Roboto','sans-serif';
-        z-index: 2;
-        height: 55%;
-        margin-top: 90px;
-        margin-right: 10px;
-        right: 0;
-        position: absolute;
-        width: 300px;
-        overflow: auto;
-        background-color: #fff;
-        border: 1px solid #000;
-      }
+  font-family: 'Roboto','sans-serif';
+  z-index: 2;
+  height: 55%;
+  margin-top: 90px;
+  margin-right: 10px;
+  right: 0;
+  position: absolute;
+  width: 300px;
+  overflow: auto;
+  background-color: #fff;
+  border: 1px solid #000;
+}
 
 #right-panel select, #right-panel input {
   font-size: 15px;
@@ -95,12 +95,4 @@ li:nth-child(odd) {
 
 #right-panel i {
   font-size: 12px;
-}
-
-#draw {
-  position: absolute;
-  margin-top: 5px;
-  margin-left: 53%;
-  z-index: 5;
-  height: 24px;
 }
