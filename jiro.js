@@ -4,11 +4,13 @@ var drawingManager;
 var infowindow;
 var markers = [];
 
-
+var directionsService;
+var directionsDisplay;
+var cebu;
 
 function initMap() {
   // Create the map.
-  var cebu = {lat: 10.3157, lng: 123.8854};
+  cebu = {lat: 10.3157, lng: 123.8854};
   map = new google.maps.Map(document.getElementById('map'), {
     center: cebu,
     zoom: 20
@@ -19,6 +21,11 @@ function initMap() {
           map: map
   });
 
+  directionsDisplay = new google.maps.DirectionsRenderer;
+  directionsService = new google.maps.DirectionsService;
+  document.getElementById('right-panel').style.display = 'none';
+  
+  // Drawing tools functions 
   draw.onclick = function () {
     drawingManager.setMap(map);
     draw.disabled = true;
@@ -53,13 +60,17 @@ function initMap() {
   }
   });
 
+  // Drawing tools event listeners 
+  google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+  google.maps.event.addListener(map, 'click', clearSelection);
+  google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
 
   google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+    // for circles
     if (event.type == google.maps.drawing.OverlayType.CIRCLE) {
       var radius = event.overlay.getRadius();
       var center = event.overlay.getCenter();
-     
-
+    
       var IDs=[];
       for(var k in markers){
         if(google.maps.geometry.spherical.computeDistanceBetween(center,markers[k].getPosition())<=radius){
@@ -75,14 +86,30 @@ function initMap() {
         position: center,
 
       });
-
+      console.log(IDs.length);
       infowindow.open(map);
       infowindow.addListener('closeclick', deleteSelectedShape);
     }
-    // for rectangle
+
+    // for rectangles
     else {
-      var bounds = event.overlay.getBounds()
-      clearMap();
+      var IDs=[];
+      for(var k in markers){
+        if(event.overlay.getBounds().contains(markers[k].getPosition())){
+          IDs.push(k);
+          markers[k].setMap(map);
+          console.log(markers[k].title, markers[k].position);
+        }       
+      } 
+      var matches = "Found " + IDs.length.toString() + " restaurant(s)";
+      infowindow = new google.maps.InfoWindow({
+        content: matches,
+        position: event.overlay.getBounds().getCenter(),
+
+      });
+      console.log(IDs.length);
+      infowindow.open(map);
+      infowindow.addListener('closeclick', deleteSelectedShape);
     }
   });
 
@@ -101,11 +128,6 @@ function initMap() {
     }
   });
 
-  google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
-  google.maps.event.addListener(map, 'click', clearSelection);
-  google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
-  
-
   var service = new google.maps.places.PlacesService(map);
   var getNextPage = null;
   var moreButton = document.getElementById('more');
@@ -113,8 +135,6 @@ function initMap() {
     moreButton.disabled = true;
     if (getNextPage) getNextPage();
   };
-
-
 
 /*  // default markers when map loads
   service.nearbySearch(
@@ -129,13 +149,9 @@ function initMap() {
     };
   });*/
 
-
-  
   // for dropdown menu
   var nearbyRequest = {location: cebu, radius: 500, type: ['restaurant']};
   var dropdown = document.getElementById('cuisine');
-
-  
 
   dropdown.onchange = function() {
     
@@ -160,10 +176,6 @@ function initMap() {
         };
       });
   };
-
-  //
-
-
 }
 
 
@@ -193,13 +205,23 @@ function createMarkers(places) {
     marker.addListener('click', (
       function(marker, i) {
         return function() {
-          alert(marker.title);                    
+          
+          infowindow = new google.maps.InfoWindow({
+          content: marker.title,
+          position: marker.position,
+
+          });        
+          infowindow.open(map);
+          map.setCenter(marker.getPosition());
+          calculateAndDisplayRoute(directionsService, directionsDisplay, marker.position);
+          directionsDisplay.setMap(map);
+          document.getElementById('right-panel').style.display = 'block';
+          directionsDisplay.setPanel(document.getElementById('right-panel'));
         }
       })
     (marker, i));
-
+  
     markers.push(marker);
-
     var li = document.createElement('li');
     li.textContent = place.name
     placesList.appendChild(li);
@@ -231,13 +253,30 @@ function deleteSelectedShape() {
     });
     infowindow.close();
   }
-
 }
 
 function clearMap() {
   document.getElementById("places").innerHTML = "";
+  document.getElementById('right-panel').style.display = 'none';
+  directionsDisplay.setMap(null);
   for (var i = 0; i < markers.length; i++) {
     markers[i].setMap(null);
   }
+  
+}
 
+function calculateAndDisplayRoute(directionsService, directionsDisplay, destination) {
+  directionsService.route({
+    origin: cebu,
+    destination: destination,
+    travelMode: 'DRIVING'}, 
+    function(response, status) {
+      if (status === 'OK') {
+        directionsDisplay.setDirections(response);
+        infowindow.close()
+      } 
+      else {
+        window.alert('Directions request failed due to ' + status);
+      }
+    });
 }
