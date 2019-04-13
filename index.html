@@ -4,29 +4,29 @@
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
-    <div id="interface">
     <button id="draw">Show Drawing Panel</button>
-    <button id="delete-button">Delete Selected Shape</button><br/><br/>
-    Filter by:
-    <select id="cuisine">
-      <option value="">All</option>
-      <option value="filipino">Filipino</option>
-      <option value="chinese">Chinese</option>
-      <option value="american">American</option>
-      <option value="mexican">Mexican</option>
-    </select>
-    <div id="right-panel">
-        Results
-        <ul id="places"></ul>
-        <button id="more">More results</button>
+    <div id="interface">
+      
+      
+      <button id="delete-button">Delete Selected Shape</button><br/><br/>
+      Filter by:
+      <select id="cuisine">
+        <option value="">All</option>
+        <option value="filipino">Filipino</option>
+        <option value="chinese">Chinese</option>
+        <option value="american">American</option>
+        <option value="mexican">Mexican</option>
+      </select>
+      <div id="results-panel">
+          Results
+          <ul id="places"></ul>
+          <button id="more">More results</button>
       </div>
     </div>
+    <div id="right-panel"></div>
     <div id="map"></div>
   <script src="jiro.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMMbwinQfdwy2ESaTGgYiNT4pvNEnT-qU&libraries=drawing,places&callback=initMap">
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAC1q0jAx_lI7DRiNXAmIdvWssvdoI6Yk&libraries=drawing,places&callback=initMap">
   </script>
 </body>
 </html>
-
-
-
