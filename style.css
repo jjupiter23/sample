@@ -2,12 +2,17 @@
   margin-top: 90px;
   margin-left: 10px;
   width: 200px;
-  height: 200px;
-  background-color: #ccc;
+  background-color: #fff;
   position: absolute;
   z-index: 1;
-  border: 1px solid #000;
+  border: 1px solid #ccc;
   float:left;
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+#interface p{
+  padding-left: 10px;
 }
 
 #map {
@@ -22,7 +27,7 @@ html, body {
 }
 
 #results-panel select, #results-panel input {
-  font-size: 15px;
+  font-size: 12px;
 }
 
 #results-panel select {
@@ -34,8 +39,8 @@ html, body {
 }
 
 #results-panel {
-  font-family: Arial, Helvetica, sans-serif;
-  border: 1px solid #999;
+
+  
   background: #fff;
   width: 200px;
 }
@@ -86,7 +91,7 @@ li:nth-child(odd) {
 }
 
 #right-panel select, #right-panel input {
-  font-size: 15px;
+  font-size: 12px;
 }
 
 #right-panel select {
@@ -95,4 +100,16 @@ li:nth-child(odd) {
 
 #right-panel i {
   font-size: 12px;
+}
+
+#draw {
+  width: 100%;
+}
+
+#delete-button{
+  width: 100%;
+}
+
+#cuisine {
+  width: 70%;
 }
