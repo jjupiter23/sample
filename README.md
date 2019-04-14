@@ -1,4 +1,6 @@
 # A sample exercise using the Google Maps API
+https://jjupiter23.github.io/sample/
+
 What the code is able to accomplish is explained below:
 
 * Plots restaurants across Cebu City - for demonstration purposes search radius is limited to 500
