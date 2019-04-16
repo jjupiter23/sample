@@ -226,7 +226,7 @@ function createMarkers(places) {
           "<p><b>User Rating</b> <br/>" +
           places[i].rating + " / 5 ("+places[i].user_ratings_total+") users <br/>" +
           "<p><b>Customers today</b> <br/>" + localStorage.getItem(places[i].id,counter);
-
+          b.appendChild(a);
           // basic function to store number of customers in localStorage
           a.onclick = function (){
             alert("Thank you for visiting! " + places[i].name);
