@@ -142,7 +142,6 @@ function initMap() {
   var dropdown = document.getElementById('cuisine');
 
   dropdown.onchange = function() {
-    
     clearMap();
     document.getElementById('analytics').innerHTML='';
     markers = [];
@@ -168,12 +167,10 @@ function initMap() {
 }
 
 function createMarkers(places) {
-  
   var bounds = new google.maps.LatLngBounds();
   var placesList = document.getElementById('places');
   
   for (var i = 0, place; place = places[i]; i++) {
-    placesLocal.push(places[i]);
     var image = {
       url: place.icon,
       size: new google.maps.Size(71, 71),
@@ -229,7 +226,6 @@ function createMarkers(places) {
           "<p><b>User Rating</b> <br/>" +
           places[i].rating + " / 5 <br/>" +
           "<p><b>Customers today</b> <br/>" + localStorage.getItem(places[i].id,counter);
-
           b.appendChild(a);
 
           // basic function to store number of customers in localStorage
