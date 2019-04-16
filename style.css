@@ -1,8 +1,27 @@
 #interface {
+  padding: 10px;
   margin-top: 90px;
   margin-left: 10px;
   width: 200px;
   background-color: #fff;
+  position: absolute;
+  z-index: 1;
+  border: 1px solid #ccc;
+  float:left;
+  font-family: sans-serif;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 8px 8px 8px 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2), 0 -1px 0px rgba(0,0,0,0.02);
+  transition-property: background,box-shadow;
+}
+
+#analytics {
+  margin-top: 530px;
+  margin-left: 10px;
+  width: 200px;
+  height: 100px;
+  background-color: #ccc;
   position: absolute;
   z-index: 1;
   border: 1px solid #ccc;
