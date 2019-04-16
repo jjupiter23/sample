@@ -7,9 +7,15 @@ var markers = [];
 var directionsService;
 var directionsDisplay;
 var cebu;
+var counter = 0;
+var placesLocal = [];
+
+
+
 
 function initMap() {
   // Create the map.
+
   cebu = {lat: 10.3157, lng: 123.8854};
   map = new google.maps.Map(document.getElementById('map'), {
     center: cebu,
@@ -24,7 +30,7 @@ function initMap() {
   directionsDisplay = new google.maps.DirectionsRenderer;
   directionsService = new google.maps.DirectionsService;
   document.getElementById('right-panel').style.display = 'none';
-  
+  //document.getElementById('analytics').style.display = 'none';
   // Drawing tools functions 
   draw.onclick = function () {
     drawingManager.setMap(map);
@@ -156,6 +162,7 @@ function initMap() {
   dropdown.onchange = function() {
     
     clearMap();
+    document.getElementById('analytics').innerHTML='';
     markers = [];
     cuisine = document.getElementById("cuisine").value 
     if (cuisine == 'all') {
@@ -176,6 +183,8 @@ function initMap() {
         };
       });
   };
+
+
 }
 
 
@@ -185,7 +194,7 @@ function createMarkers(places) {
   var placesList = document.getElementById('places');
   
   for (var i = 0, place; place = places[i]; i++) {
-
+    placesLocal.push(places[i]);
     var image = {
       url: place.icon,
       size: new google.maps.Size(71, 71),
@@ -217,6 +226,22 @@ function createMarkers(places) {
           directionsDisplay.setMap(map);
           document.getElementById('right-panel').style.display = 'block';
           directionsDisplay.setPanel(document.getElementById('right-panel'));
+
+          document.getElementById("analytics").innerHTML = "";
+          var b = document.getElementById('analytics');
+          var a = document.createElement('button');
+          a.textContent = places[i].name;
+          a.id = places[i].id;
+          
+          b.appendChild(a);
+ 
+          a.onclick = function (){
+            alert('HI!');
+
+            localStorage.setItem(places[i].id,counter+=1)
+          }
+          //console.log(buttons);
+
         }
       })
     (marker, i));
@@ -230,6 +255,9 @@ function createMarkers(places) {
   }
   map.fitBounds(bounds);
   google.maps.event.addDomListener(window, 'load', initMap);
+
+
+
 }
 
 function clearSelection() {
