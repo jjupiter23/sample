@@ -5,26 +5,28 @@
   </head>
   <body>
     <div id="interface">
-   
-      <button id="draw">Show Drawing Panel</button>
-      <button id="delete-button">Delete Selected Shape</button>
+      <b>Drawing Tools</b><br/><br/>
+      <div id="drawtools">
+        <img id="draw" src="draw.png">
+        <img id="delete-button" src="eraser.png"></center>
+      </div>
       <p>
-      Filter by:
-      <select id="cuisine">
+      <div id="analytics"></div>
+      <p>
+      <b>Select Cuisine</b>
+      <br/><br/>
+      <select id="cuisine" >
         <option value="">All</option>
         <option value="filipino">Filipino</option>
         <option value="chinese">Chinese</option>
         <option value="american">American</option>
         <option value="mexican">Mexican</option>
       </select>
-      </p>
-      <p>
       <div id="results-panel">
           <ul id="places"></ul>
-          <button id="more">More results</button>
       </div>
+      <button id="more">More results</button>
     </div>
-    <div id="analytics"></div>
     <div id="right-panel"></div>
     <div id="map"></div>
   <script src="jiro.js"></script>
